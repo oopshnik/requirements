@@ -1,15 +1,37 @@
+#!/bin/bash
+
+# Install udocker
 pip install udocker
 
+# Initialize udocker repo
+echo "Initializing udocker repository..."
 udocker install
-udocker pull debian:latest
-udocker create --name=debian-vnc debian
 
-udocker run --name=debian-vnc -v /tmp/.X11-unix:/tmp/.X11-unix debian:latest /bin/bash -c "
-apt-get update && \
-apt-get install -y tightvncserver xfce4 xfce4-goodies && \
-mkdir -p ~/.vnc && \
-echo 'mypassword' | vncpasswd -f > ~/.vnc/passwd && \
-chmod 600 ~/.vnc/passwd && \
-vncserver :1 -geometry 1280x800 -depth 24 && \
-echo 'VNC server started on :1'
+# Pull the debian image
+echo "Pulling debian:latest image..."
+udocker pull debian:latest
+
+# Create the container with a valid name
+CONTAINER_NAME="debian-vnc"
+echo "Creating container with name: $CONTAINER_NAME"
+udocker create --name=$CONTAINER_NAME debian:latest
+
+# Run the container with VNC setup
+echo "Running container to set up VNC..."
+udocker run --name=$CONTAINER_NAME -v /tmp/.X11-unix:/tmp/.X11-unix debian:latest /bin/bash -c "
+  apt-get update && \
+  apt-get install -y tightvncserver xfce4 xfce4-goodies && \
+  mkdir -p ~/.vnc && \
+  echo 'mypassword' | vncpasswd -f > ~/.vnc/passwd && \
+  chmod 600 ~/.vnc/passwd && \
+  vncserver :1 -geometry 1280x800 -depth 24 && \
+  echo 'VNC server started on :1'
 "
+
+# Check if the container started successfully
+if [ $? -eq 0 ]; then
+    echo "VNC server started successfully in container: $CONTAINER_NAME"
+else
+    echo "Error: Failed to start VNC server in container."
+    exit 1
+fi
