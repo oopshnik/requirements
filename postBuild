@@ -1,0 +1,13 @@
+udocker install
+udocker pull debian:latest
+udocker create --name=debian-vnc debian
+
+udocker run --name=debian-vnc -v /tmp/.X11-unix:/tmp/.X11-unix debian:latest /bin/bash -c "
+apt-get update && \
+apt-get install -y tightvncserver xfce4 xfce4-goodies && \
+mkdir -p ~/.vnc && \
+echo 'mypassword' | vncpasswd -f > ~/.vnc/passwd && \
+chmod 600 ~/.vnc/passwd && \
+vncserver :1 -geometry 1280x800 -depth 24 && \
+echo 'VNC server started on :1'
+"
