@@ -1,3 +1,5 @@
+pip install udocker
+
 udocker install
 udocker pull debian:latest
 udocker create --name=debian-vnc debian
