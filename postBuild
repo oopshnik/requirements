@@ -12,7 +12,7 @@ echo "Pulling debian:latest image..."
 udocker pull debian:latest
 
 # Create the container with a valid name
-CONTAINER_NAME="debian-vnc"
+CONTAINER_NAME="debian_vnc"  # Changed the name to use underscore instead of dash
 echo "Creating container with name: $CONTAINER_NAME"
 udocker create --name=$CONTAINER_NAME debian:latest
 
